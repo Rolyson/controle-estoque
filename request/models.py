@@ -21,11 +21,12 @@ class Request(models.Model):
     #     (5, "Cancelado"), 
     # ]
 
-class Request_Product(models.Model):
+class ProductRequest(models.Model):
     class Meta:
-        verbose_name="Request_Product"
-        verbose_name_plural="Request_Products"
+        verbose_name="Product Request"
+        verbose_name_plural="Products Requests"
 
+    request         = models.ForeignKey(Request, on_delete=models.DO_NOTHING)
     product         = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
     quantity        = models.FloatField()
     quantity_served = models.FloatField(default=0)
@@ -39,10 +40,10 @@ class Request_Product(models.Model):
     #     (5, "Cancelado"), 
     # ]
 
-class Movement(models.Model):
+class MovementProduct(models.Model):
     class Meta:
-        verbose_name="Movement"
-        verbose_name_plural="Movements"
+        verbose_name="Movement Product"
+        verbose_name_plural="Movements Products"
 
     product       = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
     sector        = models.ForeignKey(Sector, on_delete=models.DO_NOTHING)
