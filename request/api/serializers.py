@@ -12,10 +12,6 @@ class RequestSerializer(ModelSerializer):
         return [ ProductRequestSerializer(item).data for item in instance.productrequest_set.all()]
 
 class ProductRequestSerializer(ModelSerializer):
-    quantity_calculated = CharField(
-        label="quantity_calculated",
-    )
-
     class Meta:
         model = ProductRequest
         fields = '__all__'
@@ -23,10 +19,10 @@ class ProductRequestSerializer(ModelSerializer):
     def validate(self, attrs):      
         errors = {}
 
-        pending_quantity = attrs.get('quantity',0) - attrs.get('quantity_served',0)
+        # pending_quantity = attrs.get('quantity',0) - attrs.get('quantity_served',0)
         
-        if float(attrs.get('quantity_calculated',0)) > pending_quantity:
-            errors["quantity"] = "A quantidade apurada é maior que a quantidade em aberto"
+        # if float(attrs.get('quantity_calculated',0)) > pending_quantity:
+        #     errors["quantity"] = "A quantidade apurada é maior que a quantidade em aberto"
 
         if len(errors.keys()) > 0:
             raise ValidationError(errors)

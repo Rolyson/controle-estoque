@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 
-from request.models import Request, MovementProduct
+from request.models import ProductRequest, Request, MovementProduct
 
 class RequestViewSet(ModelViewSet):
     serializer_class       = RequestSerializer
@@ -44,8 +44,10 @@ class RequestViewSet(ModelViewSet):
             
             for item in request.data.get('itens',[]):
                 if item.get('quantity_calculated', None):
-                    item_serializer = ProductRequestSerializer(data=item)
-                    item_serializer.is_valid(raise_exception=True)
+                    product = ProductRequest.objects.filter(id=item.get('id',None)).first()
+                    product.quantity_served += item.get('quantity_calculated', 0)
+                    # item_serializer = ProductRequestSerializer(data=item)
+                    # item_serializer.is_valid(raise_exception=True)
 
                     
         except KeyError as k_err:
