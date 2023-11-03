@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 
 from request.models import ProductRequest, Request, MovementProduct
+from request.utils import move_stock
 
 class RequestViewSet(ModelViewSet):
     serializer_class       = RequestSerializer
@@ -44,12 +45,31 @@ class RequestViewSet(ModelViewSet):
             
             for item in request.data.get('itens',[]):
                 if item.get('quantity_calculated', None):
-                    product = ProductRequest.objects.filter(id=item.get('id',None)).first()
-                    product.quantity_served += item.get('quantity_calculated', 0)
-                    # item_serializer = ProductRequestSerializer(data=item)
-                    # item_serializer.is_valid(raise_exception=True)
 
+                    product = request_moviment.productrequest_set.filter(id=item.get('id',None)).first()
+                    product.quantity_served += item.get('quantity_calculated', 0)
+                    # if product.quantity_served > product.quantity:
+                    #     raise Exception('A quantidade atendida não pode ser maior que quantidade solicitada')
                     
+                    if item.get('status',None) != product.status:
+                        product.status = item.get('status',None) 
+                    elif product.quantity_served == product.quantity:
+                        product.status = 2
+                    elif product.quantity_served > 0:
+                        product.status = 3
+             
+                    product.save()
+                                        
+                    move_stock(request_moviment, item, 1) # moviment in
+                    move_stock(request_moviment, item, 2) # moviment out
+
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            
+
+            return Response(data='Sucesso', status=status.HTTP_200_OK)
+        
         except KeyError as k_err:
             teste = 1
         except TypeError as typeError:

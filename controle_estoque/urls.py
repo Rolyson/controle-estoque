@@ -19,13 +19,14 @@ from django.urls import path, include
 from rest_framework import routers
 from product.api.viewsets import ProductViewSet, CategoryViewSet
 from sector.api.viewsets import SectorViewSet
-from request.api.viewsets import RequestViewSet
+from request.api.viewsets import RequestViewSet, MovementProductViewSet
 
 router = routers.DefaultRouter()
-router.register( r'produtos'    , ProductViewSet   , basename='Produto'     )
-router.register( r'categorias'  , CategoryViewSet  , basename='Categoria'   )
-router.register( r'setores'     , SectorViewSet    , basename='Setor'       )
-router.register( r'solicitacoes', RequestViewSet   , basename='Solicitacao' )
+router.register( r'produtos'     , ProductViewSet         , basename='Produto'       )
+router.register( r'categorias'   , CategoryViewSet        , basename='Categoria'     )
+router.register( r'setores'      , SectorViewSet          , basename='Setor'         )
+router.register( r'solicitacoes' , RequestViewSet         , basename='Solicitacao'   )
+router.register( r'movimentacoes', MovementProductViewSet , basename='movimentacoes' )
 
 urlpatterns = [
     path('', include(router.urls)),
